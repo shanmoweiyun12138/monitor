@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="js/vue.js"></script>
+    <title>字符转换</title>
+</head>
+<body>
+<div id="app">
+    请输入查询关键字：<input type="text" v-model="search" />
+    <table>
+        <tr>
+            <th>名称</th>
+            <th>价格</th>
+            <th>数量</th>
+        </tr>
+        <tr v-for='x in list'>
+            <td>{{x.name}}</td>
+            <td>{{x.price}}</td>
+            <td>{{x.num}}</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var vm=new Vue({
+        el:'#app',
+        data:{
+            /*定义空数组装信息*/
+            info:[{
+                name:"手机1",
+                price:1000,
+                num:10
+            },{
+                name:"手机2",
+                price:1000,
+                num:10
+            },{
+                name:"手机3",
+                price:1000,
+                num:10
+            },{
+                name:"手机4",
+                price:1000,
+                num:10
+            },{
+                name:"手机5",
+                price:1000,
+                num:10
+            },{
+                name:"手机6",
+                price:1000,
+                num:10
+            },{
+                name:"手机7",
+                price:1000,
+                num:10
+            },{
+                name:"手机8",
+                price:1000,
+                num:10
+            }],
+            /*定义变量装查询输入的字符串*/
+            search:''
+        },
+        /*computed比methods效率高，不需要重新渲染页面*/
+        computed:{
+            list:function(){
+                alert("===")
+                var arr =[];
+                for(var i=0;i<this.info.length;i++){
+                    if(this.info[i].name.indexOf(this.search)!=-1){
+                        arr.push(this.info[i])
+                    }
+                }
+                return arr;
+
+            }
+        }
+    })
+//    for(var i = 1;i<20;i++){
+//        vm.info.push({name:'手机'+i,price:1000*i,num:i})
+//    }
+</script>
+</body>
+</html>

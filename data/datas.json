@@ -1,0 +1,8 @@
+{"total":28,"rows":[
+  {"productid":"FI-SW-01","productname":"Koi","status":"P","updatetime":"2017-9-12","id":"001"},
+  {"productid":"FI-SW-02","productname":"Dalmation","status":"P","updatetime":"2017-9-11","id":"002"},
+  {"productid":"FI-SW-03","productname":"Rattlesnake","status":"P","updatetime":"2017-9-10","id":"003"},
+  {"productid":"FI-SW-04","productname":"Manx","status":"P","updatetime":"2017-9-9","id":"004"},
+  {"productid":"FI-SW-05","productname":"Manx","status":"P","updatetime":"2017-9-9","id":"004"},
+  {"productid":"FI-SW-06","productname":"Manx","status":"P","updatetime":"2017-9-9","id":"004"}
+]}

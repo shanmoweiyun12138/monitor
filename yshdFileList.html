@@ -1,0 +1,562 @@
+<!doctype html>
+<html class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Monitor-监控系统</title>
+  <meta name="description" content="系统参数列表">
+  <meta name="keywords" content="table">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <link rel="icon" type="image/png" href="assets/i/favicon.png">
+  <link rel="apple-touch-icon-precomposed" href="assets/i/app-icon72x72@2x.png">
+  <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+  <link rel="stylesheet" href="assets/css/amazeui.min.css"/>
+  <link rel="stylesheet" href="assets/css/admin.css">
+
+
+  <style type="text/css">
+    .modal-mask {
+      position: fixed;
+      z-index: 9998;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, .5);
+      display: table;
+      transition: opacity .3s ease;
+    }
+    .modal-wrapper {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    .modal-container {
+      width: 500px;
+      margin: 0 auto;
+      height:400px;
+      padding: 20px 30px;
+      background-color: #fff;
+      border-radius: 2px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+      transition: all .3s ease;
+      font-family: Helvetica, Arial, sans-serif;
+    }
+    .modal-body {
+      padding: 20px 0;
+      height:100px;
+    }
+    .model-footer {
+      padding-top: 120px;
+    }
+    .modal-default-button {
+      text-align: center;
+    }
+
+    .modal-enter {
+      opacity: 0;
+    }
+    .modal-leave-active {
+      opacity: 0;
+    }
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+      -webkit-transform: scale(1.1);
+      transform: scale(1.1);
+    }
+    label {
+      width:50px;
+    }
+    #name,#sex,#age {
+      width:300px;
+    }
+    .modal-footer {
+      border:0;
+    }
+  </style>
+</head>
+<body>
+<!--[if lte IE 9]>
+<p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
+  以获得更好的体验！</p>
+<![endif]-->
+<div id="home">
+  <header class="am-topbar am-topbar-inverse admin-header" id="heade"></header>
+
+  <div class="am-cf admin-main">
+    <div class="admin-sidebar am-offcanvas" id="admin-offcanvas"></div>
+    <!-- content start -->
+    <div class="admin-content">
+      <div class="admin-content-body">
+        <div class="am-cf am-padding am-padding-bottom-0">
+          <div class="am-fl am-cf"><strong class="am-text-primary am-text-lg">系统参数管理</strong> / <small>系统参数列表</small></div>
+        </div>
+        <hr/>
+        <div class="am-g">
+          <div class="am-u-sm-12 am-u-md-6">
+            <div class="am-btn-toolbar">
+              <div class="am-btn-group am-btn-group-xs">
+                <button type="button" class="am-btn am-btn-primary" data-am-modal="{target: '#my-alert'}"><span class="am-icon-plus"></span> 新增</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="am-u-sm-12 am-u-md-3">
+            <div class="am-input-group am-input-group-sm">
+              <input type="text" class="am-form-field" v-model="search" placeholder="Seach">
+              <span class="am-input-group-btn">
+                <!--<button class="am-btn am-btn-default" type="button">搜索</button>-->
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="am-g">
+          <div class="am-u-sm-12">
+              <table class="am-table am-table-striped am-table-hover table-main">
+                <thead>
+                <tr>
+                  <th class="table-check"><input type="checkbox" /></th>
+                  <th class="table-id">ID</th>
+                  <th class="table-title">参数key</th>
+                  <th class="table-type">参数值</th>
+                  <th class="table-author am-hide-sm-only">描述</th>
+                  <!--<th class="table-date am-hide-sm-only">修改日期</th>-->
+                  <th class="table-set">操作</th>
+                </tr>
+                </thead>
+                <tbody id="doc-modal-list">
+                <tr v-for="(item,index) in lists">
+                  <td><input type="checkbox" /></td>
+                  <td>{{index}}</td>
+                  <td><a href="#">{{item.syskey}}</a></td>
+                  <td>{{item.sysvalues}}</td>
+                  <td class="am-hide-sm-only">{{item.describe}}</td>
+                  <!--<td class="am-hide-sm-only">{{item.updatetime}}</td>-->
+                  <td>
+                    <div class="am-btn-toolbar">
+                      <div class="am-btn-group am-btn-group-xs">
+                        <!--<button class="am-btn am-btn-default am-btn-xs am-text-secondary" @click="openTagModalCheck(item)"><span class="am-icon-pencil-square-o"></span> 查看</button>-->
+                        <button class="am-btn am-btn-default am-btn-xs am-text-success"  @click="openTagModalUpdate(item, index)">编辑</button>
+                        <button class="am-btn am-btn-default am-btn-xs am-text-danger am-hide-sm-only" @click="openTagModalDel(index,item.sysparamId)" type="button"
+                                class="am-btn am-btn-warning"
+                                id="doc-confirm-toggle"><span class="am-icon-trash-o"></span> 删除</button>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <!--<div class="am-cf">
+                共 15 条记录
+                <div class="am-fr">
+                  <ul class="am-pagination">
+                    <li class="am-disabled"><a href="#">«</a></li>
+                    <li class="am-active"><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#">»</a></li>
+                  </ul>
+                </div>
+              </div>-->
+              <hr />
+          </div>
+          <modal-check v-if="showModalCheck" @close="showModalCheck = false" v-bind:my-tag-check-l="selectTagCheck"></modal-check>
+          <modal-update v-if="showModalUpdate" @close="showModalUpdate = false"  @update="update()"  :my-tag-update-r="selectTagUpdate"></modal-update>
+          <modal-del-confirm></modal-del-confirm>
+        </div>
+      </div>
+
+
+
+      <!--model的body的部分---------查看------->
+      <script type="text/x-template" id="modal-template-check">
+        <transition name="modal">
+
+          <div class="modal-mask">
+            <div class="modal-wrapper">
+              <div class="modal-container">
+                <div class="modal-header">
+                  <slot name="header">
+                    信息查看
+                  </slot>
+                </div>
+
+
+                <div class="modal-body">
+                  <slot name="body">
+                    <form class="am-form am-form-horizontal" data-am-validator>
+                      <fieldset>
+                        <div class="am-form-group">
+                          <label for="doc-vld-name-2" class="am-u-sm-4">标题：</label>
+                          <div class="am-u-sm-8">
+                            <input type="text" id="doc-vld-name-2" minlength="3"  v-model="myTagCheckL.productid"  disabled/>
+                          </div>
+                        </div>
+
+                        <div class="am-form-group">
+                          <label for="doc-vld-pwd-1" class="am-u-sm-4">类别：</label>
+                          <div class="am-u-sm-8">
+                            <input type="text" id="doc-vld-pwd-1"  v-model="myTagCheckL.status" disabled/>
+                          </div>
+                        </div>
+
+                        <div class="am-form-group">
+                          <label class="am-u-sm-4">作者：</label>
+                          <div class="am-u-sm-8">
+                            <input type="text" v-model="myTagCheckL.productname" disabled/>
+                          </div>
+                        </div>
+
+                        <div class="am-form-group">
+                          <label class="am-u-sm-4">修改日期：</label>
+                          <div class="am-u-sm-8">
+                            <input type="text" v-model="myTagCheckL.updatetime" disabled/>
+                          </div>
+                        </div>
+                        <button class="am-btn am-btn-secondary" type="button" @click="$emit('close')">关闭</button>
+                      </fieldset>
+                    </form>
+                  </slot>
+                  </div>
+
+
+              </div>
+            </div>
+          </div>
+        </transition>
+      </script>
+
+
+      <!--model的body的部分---------编辑------->
+      <script type="text/x-template" id="modal-template-update">
+        <transition name="modal">
+          <div class="modal-mask">
+            <div class="modal-wrapper">
+              <div class="modal-container">
+
+
+                <div class="modal-header">
+                  <slot name="header">
+                    信息编辑
+                  </slot>
+                </div>
+
+
+                <div class="modal-body">
+                  <slot name="body">
+                    <form class="am-form am-form-horizontal" data-am-validator>
+                      <fieldset>
+                        <div class="am-form-group">
+                          <label for="doc-vld-name-2" class="am-u-sm-4">参数key：</label>
+                          <div class="am-u-sm-8">
+                            <input type="text" readonly minlength="3"  v-model="myTagUpdateR.syskey"  />
+                          </div>
+                        </div>
+
+                        <div class="am-form-group">
+                          <label for="doc-vld-pwd-1" class="am-u-sm-4">参数值：</label>
+                          <div class="am-u-sm-8">
+                            <input type="text"  v-model="myTagUpdateR.sysvalues" />
+                          </div>
+                        </div>
+
+                        <div class="am-form-group">
+                          <label class="am-u-sm-4">描述：</label>
+                          <div class="am-u-sm-8">
+                            <textarea type="text" v-model="myTagUpdateR.describe" />
+                          </div>
+                        </div>
+                        <button class="am-btn am-btn-primary" @click="$emit('update')" type="button"  :msg = 'myTagUpdateR'>修改 </button>
+                        <button class="am-btn am-btn-warning" type="button" @click="$emit('close')">放弃</button>
+                      </fieldset>
+                      </form>
+                  </slot>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </transition>
+      </script>
+
+
+      <!--model的body部分------------删除二次确认-->
+      <script type="text/x-template" id="modal-template-del-confirm">
+        <div class="am-modal am-modal-confirm" tabindex="-1" id="my-confirm">
+          <div class="am-modal-dialog">
+            <div class="am-modal-hd">Amaze UI</div>
+            <div class="am-modal-bd">
+              你，确定要删除这条记录吗？
+            </div>
+            <div class="am-modal-footer">
+              <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+              <span class="am-modal-btn" data-am-modal-confirm>确定</span>
+            </div>
+          </div>
+        </div>
+      </script>
+
+
+
+
+      <div class="am-modal am-modal-alert" tabindex="-1" id="my-alert">
+        <div class="am-modal-dialog">
+          <div class="am-modal-hd">新增
+            <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+          </div>
+          <div class="am-modal-bd">
+            <form @submit.prevent="add()" class="am-form am-form-horizontal" data-am-validator>
+              <fieldset>
+                <div class="am-form-group">
+                  <label for="doc-vld-name-2" class="am-u-sm-3 am-form-label">参数key：</label>
+                  <div class="am-u-sm-9">
+                    <input type="text"  minlength="3" maxlength="10" placeholder="key(至少3个字符,且不能超过10个字符)" v-model="sysParamDto.syskey"required/>
+                  </div>
+                </div>
+
+                <div class="am-form-group">
+                  <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">参数值：</label>
+                  <div class="am-u-sm-9">
+                    <input type="text"  v-model="sysParamDto.sysvalues"minlength="3" maxlength="10" placeholder="key(至少3个字符,且不能超过10个字符)" required/>
+                  </div>
+                </div>
+
+                <div class="am-form-group">
+                  <label class="am-u-sm-3 am-form-label">描述：</label>
+                  <div class="am-u-sm-9">
+                    <input type="text" v-model="sysParamDto.describe"/>
+                  </div>
+                </div>
+
+
+                <button class="am-btn am-btn-secondary" type="submit">提交</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <footer class="admin-content-footer">
+        <hr>
+        <p class="am-padding-left">© 2017 版权所有 Version_1.0</p>
+      </footer>
+    </div>
+    <!-- content end -->
+  </div>
+</div>
+<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
+
+
+<!--[if lt IE 9]>
+<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.staticfile.org/modernizr/2.8.3/modernizr.js"></script>
+<script src="assets/js/amazeui.ie8polyfill.min.js"></script>
+<![endif]-->
+
+<!--[if (gte IE 9)|!(IE)]><!-->
+<script src="assets/js/jquery.min.js"></script>
+<script src="js/vue.js"></script>
+<!--<![endif]-->
+
+<script src="assets/js/amazeui.min.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="js/public.js"></script>
+
+<script>
+
+  var vm = new Vue({
+    // 选项
+    el:"#home",
+    data:{
+      search:"",
+      items:[],//表格数据集合
+      curruntId:0,
+      sysParamDto:{
+        syskey:"",
+        sysvalues:"",
+        describe:""
+      },
+      showModalUpdate: false,
+      showModalCheck: false,
+      selectTagUpdate:null,
+      selectTagCheck:null,
+      cache:{
+        index:null,
+        person:{},
+      },
+    },
+
+    created:function() {
+      this.list()
+    },
+
+    methods:{
+      list: function () {
+        $.ajax({
+          url:serverUrl + "sys/selectAll",
+          type:"post",
+          success:function(result){
+          //console.log(JSON.stringify(result));
+            vm.items = result.data;
+          },
+          error: function(){
+            console.log("error");
+          },
+        })
+      },
+
+      add:function(){
+        var formData = this.sysParamDto;
+        this.items.push(formData);
+        $("#my-alert").modal();
+        var obj = JSON.stringify(formData);
+        $.ajax({
+          url:serverUrl + "sys/create",
+          contentType: "application/json",
+          dataType:"json",
+          type:"post",
+          data:obj,
+          success:function(result){
+            if(result.status == 200) {
+              this.showModalCheck = false;
+              vm.list();
+            } else {
+              alert(result.msg + "(" +result.status+ ")");
+            }
+          },
+          error: function(){
+
+          },
+        })
+      },
+      update:function(){
+//        let index = this.cache.index;
+//        let items = this.cache.person;
+//        this.$set(this.items,index,items);
+        var obj = JSON.stringify(this.selectTagUpdate);
+        $.ajax({
+          url:serverUrl + "sys/update",
+          data:obj,
+          contentType: "application/json",
+          dataType:"json",
+          type:"PUT",
+          success:function(result){
+            //vm.items.splice(index, 1);
+//                vm.list();
+            var code = result.status;
+            if (code == 200) {
+              vm.items.push(vm.selectTagUpdate);
+              vm.list();
+              vm.showModalUpdate = false;
+            } else {
+              alert(result.msg + "(" +result.status+ ")");
+            }
+          },
+          error: function(){
+            console.log("update - error");
+          },
+        })
+      },
+
+
+//查看--打开model
+      openTagModalCheck:function(tag){
+//console.info(tag)
+//打开模态框的要求
+        this.showModalCheck = true;
+        this.selectTagCheck = tag;
+      },
+
+      //编辑--打开model
+      openTagModalUpdate:function(tag,index){
+//console.info(tag)
+//打开模态框的要求
+        this.showModalUpdate = true;
+        let cache = Object.assign({},tag)
+
+
+        this.$set(this.cache,'person',cache);
+        this.$set(this.cache,'index',index);
+
+
+        this.selectTagUpdate = cache;
+//        this.selectTagUpdate = tag;
+      },
+
+      /**
+       * 删除
+       * @param index
+         */
+      openTagModalDel:function(index,sysparamId){
+        vm.curruntId = sysparamId;
+        $('#my-confirm').modal({
+          onConfirm: function() {
+            $.ajax({
+              url:serverUrl + "sys/delete?sysparamId=" +vm.curruntId,
+              dataType:"json",
+              type:"delete",
+              success:function(result){
+                if (result.status == 200) {
+                  vm.list();
+                } else {
+                  alert(result.msg + "(" +result.status+ ")");
+                }
+              },
+              error: function(){
+
+              },
+            })
+          },
+          // closeOnConfirm: false,
+          onCancel: function() {
+
+          }
+        });
+
+      },
+
+
+
+    },
+
+
+
+    components:{
+      'modal-check':{
+        props: ['myTagCheckL'],
+        template: '#modal-template-check'
+      },
+      'modal-update':{
+        props: ['myTagUpdateR'],
+        template: '#modal-template-update'
+      },
+      'modal-del-confirm':{
+        props:[''],
+        template:'#modal-template-del-confirm',
+      }
+    },
+
+    computed:{
+      lists:function(){
+        var arr =[];
+        for(var i=0;i<this.items.length;i++){
+          if(this.items[i].syskey.indexOf(this.search)!=-1){
+            arr.push(this.items[i])
+          }
+        }
+        return arr;
+
+      }
+    },
+
+
+  })
+
+</script>
+</body>
+</html>
