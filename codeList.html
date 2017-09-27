@@ -81,10 +81,9 @@
 <p class="browsehappy">你正在使用<strong>过时</strong>的浏览器，Amaze UI 暂不支持。 请 <a href="http://browsehappy.com/" target="_blank">升级浏览器</a>
   以获得更好的体验！</p>
 <![endif]-->
-<div id="home">
   <header class="am-topbar am-topbar-inverse admin-header" id="heade"></header>
 
-  <div class="am-cf admin-main">
+  <div class="am-cf admin-main" id="home">
     <div class="admin-sidebar am-offcanvas" id="admin-offcanvas"></div>
     <!-- content start -->
     <div class="admin-content">
@@ -155,7 +154,7 @@
                 </tbody>
               </table>
 
-              <!--<div class="am-cf">
+              <div class="am-cf">
                 共 15 条记录
                 <div class="am-fr">
                   <ul class="am-pagination">
@@ -168,7 +167,7 @@
                     <li><a href="#">»</a></li>
                   </ul>
                 </div>
-              </div>-->
+              </div>
               <hr />
           </div>
           <modal-check v-if="showModalCheck" @close="showModalCheck = false" v-bind:my-tag-check-l="selectTagCheck"></modal-check>
@@ -381,7 +380,6 @@
     </div>
     <!-- content end -->
   </div>
-</div>
 <a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
 
 
