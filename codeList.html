@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js">
+<html class="no-js" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -120,7 +120,7 @@
                   <th class="table-check"><input type="checkbox" /></th>
                   <th class="table-id">ID</th>
                   <th class="table-title">状态码</th>
-                  <th class="table-type">描述</th>
+                  <th class="table-type">状态描述</th>
                   <th class="table-author am-hide-sm-only">级别</th>
                   <th class="table-date am-hide-sm-only">工程模块</th>
                   <th class="table-date am-hide-sm-only">状态</th>
@@ -306,8 +306,6 @@
       </script>
 
 
-
-
       <div class="am-modal am-modal-alert" tabindex="-1" id="my-alert">
         <div class="am-modal-dialog">
           <div class="am-modal-hd">新增
@@ -319,14 +317,14 @@
                 <div class="am-form-group">
                   <label for="doc-vld-name-2" class="am-u-sm-3 am-form-label">状态码：</label>
                   <div class="am-u-sm-9">
-                    <input type="text"  minlength="3" maxlength="10" placeholder="key(至少3个字符,且不能超过10个字符)" v-model="sysParamDto.syskey"required/>
+                    <input type="text"  minlength="3" maxlength="10" placeholder="key(至少3个字符,且不能超过10个字符)" v-model="miguCodeDto.code" required/>
                   </div>
                 </div>
 
                 <div class="am-form-group">
-                  <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">描述：</label>
+                  <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">状态描述：</label>
                   <div class="am-u-sm-9">
-                    <input type="text"  v-model="sysParamDto.sysvalues"minlength="3" maxlength="10" placeholder="key(至少3个字符,且不能超过10个字符)" required/>
+                    <input type="text"  v-model="miguCodeDto.message" minlength="3" maxlength="10" placeholder="key(至少3个字符,且不能超过10个字符)" required/>
                   </div>
                 </div>
 
@@ -334,7 +332,7 @@
                   <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">级别：</label>
                   <div class="am-u-sm-9">
                     <div class="am-form-group am-form-select">
-                        <select class=" am-input-lg" v-model="sysParamDto.levels">
+                        <select class=" am-input-lg" v-model="miguCodeDto.levels">
                             <option v-for="level in levels" v-bind:value="level.value" selected>{{level.text}}</option>
                         </select>
                     </div>
@@ -344,8 +342,8 @@
                 <div class="am-form-group">
                   <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">工程模块：</label>
                   <div class="am-u-sm-9">
-                    <select class="am-input-lg" >
-                      <option v-for="sysvaluesList in sysvaluesLists" v-bind:value="sysvaluesList.project"> {{sysvaluesList.project}}</option>
+                    <select class="am-input-lg" v-model="miguCodeDto.project">
+                      <option v-for="miguCodeList in miguCodeLists" v-bind:value="miguCodeList.project"> {{miguCodeList.project}}</option>
                     </select>
                   </div>
                 </div>
@@ -353,7 +351,7 @@
                 <div class="am-form-group">
                   <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">状态：</label>
                   <div class="am-u-sm-9">
-                    <select @click="selectedFlag()">
+                    <select @click="selectedFlag()" v-model="miguCodeDto.flag">
                       <option  v-for="flag in flags" value="flag.value">{{flag.text}}</option>
                     </select>
 
@@ -361,29 +359,19 @@
                 </div>
 
                 <div class="am-form-group">
-                  <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">是否有效：</label>
+                  <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">是否启用：</label>
                   <div class="am-u-sm-9">
-                    <select @click="selectedFlag()">
+                    <select @click="selectedFlag()" v-model="miguCodeDto.isEffective">
                       <option  v-for="isEffective in isEffectives" value="isEffective.value">{{isEffective.text}}</option>
                     </select>
                   </div>
                 </div>
-
-                <div class="am-form-group">
-                  <label class="am-u-sm-3 am-form-label">描述：</label>
-                  <div class="am-u-sm-9">
-                    <input type="text" v-model="sysParamDto.describe"/>
-                  </div>
-                </div>
-
-
                 <button class="am-btn am-btn-secondary" type="submit">提交</button>
               </fieldset>
             </form>
           </div>
         </div>
       </div>
-
       <footer class="admin-content-footer">
         <hr>
         <p class="am-padding-left">© 2017 版权所有 Version_1.0</p>
@@ -419,10 +407,11 @@
       search:"",
       items:[],//表格数据集合
       curruntId:0,
-      sysParamDto:{
-        syskey:"",
-        sysvalues:"",
-        describe:"",
+      miguCodeDto:{
+        code:"",
+        project:"",
+        flag:1,
+        isEffective:1,
         levels:1,
       },
       showModalUpdate: false,
@@ -436,7 +425,7 @@
       levels:[{ text: '1级', value: '1' },
         { text: '2级', value: '2' },
         { text: '3级', value: '3' }],//等级
-      sysvaluesLists:[],//工程模块集合
+      miguCodeLists:[],//工程模块集合
       flags:[
         {text: '正常', value: '1'},{text: '异常', value: '2'}],//状态
       isEffectives:[{text: '是', value: '1'},
@@ -463,12 +452,12 @@
       },
 
       add:function(){
-        var formData = this.sysParamDto;
+        var formData = this.miguCodeDto;
         this.items.push(formData);
         $("#my-alert").modal();
         var obj = JSON.stringify(formData);
         $.ajax({
-          url:serverUrl + "sys/create",
+          url:serverUrl + "code/create",
           contentType: "application/json",
           dataType:"json",
           type:"post",
@@ -553,7 +542,7 @@
           contentType: "application/json",
           type:"POST",
           success:function(result){
-            vm.sysvaluesLists = result.data;
+            vm.miguCodeLists = result.data;
           },
           error: function(){
 
