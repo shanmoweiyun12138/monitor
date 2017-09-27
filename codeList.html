@@ -136,8 +136,10 @@
                   <td>{{item.message}}</td>
                   <td class="am-hide-sm-only">{{item.levels}}</td>
                   <td class="am-hide-sm-only">{{item.project}}</td>
-                  <td class="am-hide-sm-only">{{item.flag}}</td>
-                  <td class="am-hide-sm-only">{{item.isEffective}}</td>
+                  <td class="am-hide-sm-only" v-if="item.flag == 1">正常</td>
+                  <td class="am-hide-sm-only" v-else="item.flag == 2">异常</td>
+                  <td class="am-hide-sm-only" v-if="item.isEffective == 1">是</td>
+                  <td class="am-hide-sm-only" v-else="item.isEffective == 2">否</td>
                   <td>
                     <div class="am-btn-toolbar">
                       <div class="am-btn-group am-btn-group-xs">
@@ -333,7 +335,7 @@
                   <div class="am-u-sm-9">
                     <div class="am-form-group am-form-select">
                         <select class=" am-input-lg" v-model="miguCodeDto.levels">
-                            <option v-for="level in levels" v-bind:value="level.value" selected>{{level.text}}</option>
+                          <option  v-for="level in levels" v-bind:value="level.value">{{level.text}}</option>
                         </select>
                     </div>
                   </div>
@@ -351,8 +353,8 @@
                 <div class="am-form-group">
                   <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">状态：</label>
                   <div class="am-u-sm-9">
-                    <select @click="selectedFlag()" v-model="miguCodeDto.flag">
-                      <option  v-for="flag in flags" value="flag.value">{{flag.text}}</option>
+                    <select v-model="miguCodeDto.flag">
+                      <option  v-for="flag in flags" v-bind:value="flag.value">{{flag.text}}</option>
                     </select>
 
                   </div>
@@ -361,8 +363,8 @@
                 <div class="am-form-group">
                   <label for="doc-vld-pwd-1" class="am-u-sm-3 am-form-label">是否启用：</label>
                   <div class="am-u-sm-9">
-                    <select @click="selectedFlag()" v-model="miguCodeDto.isEffective">
-                      <option  v-for="isEffective in isEffectives" value="isEffective.value">{{isEffective.text}}</option>
+                    <select  v-model="miguCodeDto.isEffective">
+                      <option  v-for="isEffective in isEffectives" v-bind:value="isEffective.value">{{isEffective.text}}</option>
                     </select>
                   </div>
                 </div>
@@ -456,6 +458,7 @@
         this.items.push(formData);
         $("#my-alert").modal();
         var obj = JSON.stringify(formData);
+        alert(obj)
         $.ajax({
           url:serverUrl + "code/create",
           contentType: "application/json",
@@ -465,6 +468,8 @@
           success:function(result){
             if(result.status == 200) {
               this.showModalCheck = false;
+              vm.miguCodeDto = {message:'',code:'',flag:1,isEffective:1,levels:1,project:''};
+              alert(JSON.stringify(vm.miguCodeDto))
               vm.list();
             } else {
               alert(result.msg + "(" +result.status+ ")");
@@ -582,15 +587,6 @@
 
       },
 
-      selectedFlag:function(){
-//        $('select').selected();
-
-        // 设置参数
-        $('select').selected({
-          btnWidth: '100%', btnSize: 'lg'
-        });
-      }
-
     },
 
 
@@ -621,7 +617,6 @@
         return arr;
       }
     },
-
 
   })
 
